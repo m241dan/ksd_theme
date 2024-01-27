@@ -45,16 +45,22 @@
 local lush = require('lush')
 local hsl = lush.hsl
 
+local light_grey = hsl(0, 0, 35)
 local grey = hsl(0, 0, 50)
 local white = hsl(0, 0, 100)
-local steel_blue = hsl(239, 45, 95)
+local steel_blue = hsl(239, 45, 85)
+local constant_purp = hsl(279, 23, 56)  -- #9876AA
+local field_purp = hsl(278, 22, 55)
 local darcula_orange = hsl(27, 61, 50)
 local doxygen_green = hsl(108, 28, 46)
+local git_add = hsl(108, 28, 36)
 local func_yellow = hsl(37, 100, 71)
 local clion_white = hsl(211, 20, 72)
 local clion_black = hsl(0, 0, 17)
 local macro_yellow = hsl(57, 59, 35)
 local preproc_yellow = hsl(58, 64, 45)
+local number_blue = hsl(206, 38, 57)
+local git_change = hsl(206, 38, 37)
 
 -- LSP/Linters mistakenly show `undefined global` errors in the spec, they may
 -- support an annotation like the following. Consult your server documentation.
@@ -80,9 +86,9 @@ local theme = lush(function(injected_functions)
     -- CursorIM       { }, -- Like Cursor, but used when in IME mode |CursorIM|
     -- CursorColumn   { }, -- Screen-column at the cursor, when 'cursorcolumn' is set.
     -- CursorLine     { }, -- Screen-line at the cursor, when 'cursorline' is set. Low-priority if foreground (ctermfg OR guifg) is not set.
-    -- Directory      { }, -- Directory names (and other special names in listings)
-    -- DiffAdd        { }, -- Diff mode: Added line |diff.txt|
-    -- DiffChange     { }, -- Diff mode: Changed line |diff.txt|
+    Directory {fg=darcula_orange}, -- Directory names (and other special names in listings)
+    DiffAdd {bg=git_add}, -- Diff mode: Added line |diff.txt|
+    DiffChange {bg=git_change}, -- Diff mode: Changed line |diff.txt|
     -- DiffDelete     { }, -- Diff mode: Deleted line |diff.txt|
     -- DiffText       { }, -- Diff mode: Changed text within a changed line |diff.txt|
     -- EndOfBuffer    { }, -- Filler lines (~) after the end of the buffer. By default, this is highlighted like |hl-NonText|.
@@ -92,12 +98,12 @@ local theme = lush(function(injected_functions)
     -- VertSplit      { }, -- Column separating vertically split windows
     -- Folded         { }, -- Line used for closed folds
     -- FoldColumn     { }, -- 'foldcolumn'
-    SignColumn     { }, -- Column where |signs| are displayed
+    SignColumn {}, -- Column where |signs| are displayed
     -- IncSearch      { }, -- 'incsearch' highlighting; also used for the text replaced with ":s///c"
     -- Substitute     { }, -- |:substitute| replacement text highlighting
-    LineNr         {fg=grey}, -- Line number for ":number" and ":#" commands, and when 'number' or 'relativenumber' option is set.
-    -- LineNrAbove    { }, -- Line number for when the 'relativenumber' option is set, above the cursor line
-    -- LineNrBelow    { }, -- Line number for when the 'relativenumber' option is set, below the cursor line
+    LineNr         {fg=clion_white}, -- Line number for ":number" and ":#" commands, and when 'number' or 'relativenumber' option is set.
+    LineNrAbove    {fg=grey}, -- Line number for when the 'relativenumber' option is set, above the cursor line
+    LineNrBelow    {fg=grey}, -- Line number for when the 'relativenumber' option is set, below the cursor line
     -- CursorLineNr   { }, -- Like LineNr when 'cursorline' or 'relativenumber' is set for the cursor line.
     -- CursorLineFold { }, -- Like FoldColumn when 'cursorline' is set for the cursor line
     -- CursorLineSign { }, -- Like SignColumn when 'cursorline' is set for the cursor line
@@ -108,12 +114,12 @@ local theme = lush(function(injected_functions)
     -- MoreMsg        { }, -- |more-prompt|
     -- NonText        { }, -- '@' at the end of the window, characters from 'showbreak' and other characters that do not really exist in the text (e.g., ">" displayed when a double-wide character doesn't fit at the end of the line). See also |hl-EndOfBuffer|.
     Normal {fg=clion_white, bg=clion_black}, -- Normal text
-    -- NormalFloat    { }, -- Normal text in floating windows.
+    NormalFloat {bg=light_grey}, -- Normal text in floating windows.
     -- FloatBorder    { }, -- Border of floating windows.
     -- FloatTitle     { }, -- Title of floating windows.
     -- NormalNC       { }, -- normal text in non-current windows
-    -- Pmenu          { }, -- Popup menu: Normal item.
-    -- PmenuSel       { }, -- Popup menu: Selected item.
+    Pmenu {bg=light_grey}, -- Popup menu: Normal item.
+    PmenuSel {bg=grey, fg=white}, -- Popup menu: Selected item.
     -- PmenuKind      { }, -- Popup menu: Normal item "kind"
     -- PmenuKindSel   { }, -- Popup menu: Selected item "kind"
     -- PmenuExtra     { }, -- Popup menu: Normal item "extra text"
@@ -134,7 +140,7 @@ local theme = lush(function(injected_functions)
     -- TabLineFill    { }, -- Tab pages line, where there are no labels
     -- TabLineSel     { }, -- Tab pages line, active tab page label
     -- Title          { }, -- Titles for output from ":set all", ":autocmd" etc.
-    -- Visual         { }, -- Visual mode selection
+    Visual         {bg=light_grey}, -- Visual mode selection
     -- VisualNOS      { }, -- Visual mode selection when vim is "Not Owning the Selection".
     -- WarningMsg     { }, -- Warning messages
     -- Whitespace     { }, -- "nbsp", "space", "tab" and "trail" in 'listchars'
@@ -153,23 +159,23 @@ local theme = lush(function(injected_functions)
 
     Comment        {fg=grey}, -- Any comment
 
-    -- Constant       { }, -- (*) Any constant
-    -- String         { }, --   A string constant: "this is a string"
-    -- Character      { }, --   A character constant: 'c', '\n'
-    -- Number         { }, --   A number constant: 234, 0xff
-    -- Boolean        { }, --   A boolean constant: TRUE, false
-    -- Float          { }, --   A floating point constant: 2.3e10
+    Constant       { }, -- (*) Any constant
+    String         { }, --   A string constant: "this is a string"
+    Character      { }, --   A character constant: 'c', '\n'
+    Number         { }, --   A number constant: 234, 0xff
+    Boolean        { }, --   A boolean constant: TRUE, false
+    Float          { }, --   A floating point constant: 2.3e10
 
-    Identifier     {fg=steel_blue}, -- (*) Any variable name
-    -- Function       { }, --   Function name (also: methods for classes)
+    Identifier     { }, -- (*) Any variable name
+    Function       { }, --   Function name (also: methods for classes)
 
-    -- Statement      { }, -- (*) Any statement
-    -- Conditional    { }, --   if, then, else, endif, switch, etc.
-    -- Repeat         { }, --   for, do, while, etc.
-    -- Label          { }, --   case, default, etc.
-    -- Operator       { }, --   "sizeof", "+", "*", etc.
-    -- Keyword        { }, --   any other keyword
-    -- Exception      { }, --   try, catch, throw
+    Statement      { }, -- (*) Any statement
+    Conditional    {fg=darcula_orange}, --   if, then, else, endif, switch, etc.
+    Repeat         { }, --   for, do, while, etc.
+    Label          { }, --   case, default, etc.
+    Operator       { }, --   "sizeof", "+", "*", etc.
+    Keyword        { }, --   any other keyword
+    Exception      { }, --   try, catch, throw
 
     PreProc        { }, -- (*) Generic Preprocessor
     Include        { }, --   Preprocessor #include
@@ -177,10 +183,10 @@ local theme = lush(function(injected_functions)
     Macro          { }, --   Same as Define
     PreCondit      { }, --   Preprocessor #if, #else, #endif, etc.
 
-    Type           {fg=steel_blue}, -- (*) int, long, char, etc.
-    -- StorageClass   { }, --   static, register, volatile, etc.
-    -- Structure      { }, --   struct, union, enum, etc.
-    -- Typedef        { }, --   A typedef
+    Type           { }, -- (*) int, long, char, etc.
+    StorageClass   { }, --   static, register, volatile, etc.
+    Structure      { }, --   struct, union, enum, etc.
+    Typedef        { }, --   A typedef
 
     Special        { }, -- (*) Any special symbol
     SpecialChar    { }, --   Special character in a constant
@@ -189,11 +195,13 @@ local theme = lush(function(injected_functions)
     SpecialComment { }, --   Special things inside a comment (e.g. '\n')
     Debug          { }, --   Debugging statements
 
-    -- Underlined     { gui = "underline" }, -- Text that stands out, HTML links
+    Underlined     { gui = "underline" }, -- Text that stands out, HTML links
     -- Ignore         { }, -- Left blank, hidden |hl-Ignore| (NOTE: May be invisible here in template)
     -- Error          { }, -- Any erroneous construct
     -- Todo           { }, -- Anything that needs extra attention; mostly the keywords TODO FIXME and XXX
 
+    netrwList {fg=darcula_orange},
+    netrwSymLink {fg=number_blue},
     -- These groups are for the native LSP client and diagnostic system. Some
     -- other LSP clients may use these groups, or use their own. Consult your
     -- LSP client's documentation.
@@ -251,56 +259,45 @@ local theme = lush(function(injected_functions)
     -- sym'@text.literal'
     --
     -- For more information see https://github.com/rktjmp/lush.nvim/issues/109
-
-    sym"@function.macro" {fg=macro_yellow},
-    -- sym"@text.literal"      { }, -- Comment
-    -- sym"@text.reference"    { }, -- Identifier
-    -- sym"@text.title"        { }, -- Title
-    -- sym"@text.uri"          { }, -- Underlined
-    -- sym"@text.underline"    { }, -- Underlined
-    -- sym"@text.todo"         { }, -- Todo
-    -- sym"@comment"           { }, -- Comment
     sym"@comment.documentation" {fg=doxygen_green},
-    -- sym"@punctuation"       { }, -- Delimiter
-    sym"@punctuation.delimiter" {fg=darcula_orange},
-    -- sym"@constant"          { }, -- Constant
-    -- sym"@constant.builtin"  { }, -- Special
-    sym"@constant.macro" {fg=macro_yellow}, -- Define
-    sym"@define" {fg=preproc_yellow}, -- Define
-    sym"@macro" {fg=macro_yellow}, -- Macro
-    -- sym"@string"            { }, -- String
-    -- sym"@string.escape"     { }, -- SpecialChar
-    -- sym"@string.special"    { }, -- SpecialChar
-    -- sym"@character"         { }, -- Character
-    -- sym"@character.special" { }, -- SpecialChar
-    -- sym"@number"            { }, -- Number
-    -- sym"@boolean"           { }, -- Boolean
-    -- sym"@float"             { }, -- Float
-    sym"@function" {fg=func_yellow}, -- Function
-    sym"@function.call" {fg=white},
-    -- sym"@function.builtin"  { }, -- Special
-    -- sym"@function.macro"    { }, -- Macro
-    -- sym"@parameter"         { }, -- Identifier
-    sym"@method"            {fg=func_yellow}, -- Function
-    sym"@field"             {fg=white}, -- Identifier
-    sym"@property"          {fg=white}, -- Identifier
-    -- sym"@constructor"       { }, -- Special
-    -- sym"@conditional"       { }, -- Conditional
-    -- sym"@repeat"            { }, -- Repeat
-    -- sym"@label"             { }, -- Label
-    sym"@operator"          {fg=white}, -- Operator
-    sym"@keyword" {fg=darcula_orange}, -- Keyword
-    -- sym"@exception"         { }, -- Exception
-    sym"@variable" {fg=white}, -- Identifier
-    -- sym"@type"              { }, -- Type
-    -- sym"@type.definition"   { }, -- Typedef
-    -- sym"@storageclass"      { }, -- StorageClass
-    -- sym"@structure"         { }, -- Structure
-    sym"@namespace"         {fg=steel_blue}, -- Identifier
-    sym"@include" {fg=preproc_yellow}, -- Include
-    sym"@preproc" {fg=preproc_yellow}, -- PreProc
-    -- sym"@debug"             { }, -- Debug
-    -- sym"@tag"               { }, -- Tag
+    sym"@constant" {fg=constant_purp},
+    sym"@constant.macro" {fg=macro_yellow},
+    sym"@define" {fg=preproc_yellow},
+    sym"@define.var" {fg=macro_yellow},
+    sym"@field" {fg=field_purp},
+    sym"@function" {fg=func_yellow},
+    sym"@function.call" {fg=clion_white},
+    sym"@function.macro" {fg=macro_yellow},
+    sym"@include" {fg=preproc_yellow},
+    sym"@keyword" {fg=darcula_orange},
+    sym"@lsp.type.property" {fg=constant_purp},
+    sym"@macro" {fg=macro_yellow},
+    sym"@method" {fg=func_yellow},
+    sym"@method.call" {fg=clion_white},
+    sym"@namespace" {fg=steel_blue},
+    sym"@number" {fg=number_blue},
+    sym"@operator" {fg=clion_white},
+    sym"@parameter" {fg=clion_white},
+    sym"@preproc" {fg=preproc_yellow},
+    sym"@preproc.ifdef.var" {fg=macro_yellow},
+    sym"@property" {fg=field_purp},
+    sym"@punctuation" {fg=clion_white},
+    sym"@punctuation.comma" {fg=darcula_orange},
+    sym"@punctuation.semicolon" {fg=darcula_orange},
+    sym"@storageclass" {fg=darcula_orange},
+    sym"@string" {fg=doxygen_green},
+    sym"@string.escape" {fg=darcula_orange},
+    sym"@template.param" {fg=constant_purp},
+    sym"@type" {fg=clion_white},
+    sym"@type.builtin" {fg=darcula_orange},
+    sym"@type.class" {fg=steel_blue},
+    sym"@type.concept" {fg=steel_blue},
+    sym"@type.enum" {fg=steel_blue},
+    sym"@type.enum.id" {fg=constant_purp},
+    sym"@type.qualifier" {fg=darcula_orange},
+    sym"@type.struct" {fg=steel_blue},
+    sym"@type.union" {fg=steel_blue},
+    sym"@variable" {fg=clion_white},
 }
 end)
 
